@@ -6,9 +6,7 @@
 }
 
 body {
-  background-color: #000;
-  /* Nền đen tuyền */
-  color: white;
+
   font-family: 'Circular', Helvetica, Arial, sans-serif;
   /* Font style Spotify */
   overflow: hidden;

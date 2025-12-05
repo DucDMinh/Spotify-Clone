@@ -62,9 +62,19 @@ button:focus-visible {
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
+
+  /* :root {
     color: #213547;
     background-color: #ffffff;
+  } */
+  body {
+    @apply bg-gray-50 text-gray-900 transition-colors duration-300;
+    /* Mặc định là Sáng (Light) */
+  }
+
+  /* Khi có class dark thì đổi màu */
+  .dark body {
+    @apply bg-[#0f172a] text-white;
   }
 
   a:hover {
