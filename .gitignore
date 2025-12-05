@@ -1,0 +1,50 @@
+# -------------------------------------------------------------------
+# 1. Global Ignores (Common for both Backend and Frontend)
+# -------------------------------------------------------------------
+
+# Dependencies
+node_modules
+*/node_modules
+
+# Environment variables (SECURITY RISK)
+# Bỏ qua các file cấu hình chứa khóa bảo mật
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Editor/OS specific files
+.DS_Store
+.vscode
+Thumbs.db
+
+
+# -------------------------------------------------------------------
+# 2. Backend Specific Ignores (DATA CẦN BỎ QUA)
+# -------------------------------------------------------------------
+
+# !!! QUAN TRỌNG: BỎ QUA THƯ MỤC CHỨA DỮ LIỆU CỦA MONGODB !!!
+# Các file như WiredTiger.*, mongod.lock không phải là code
+/server/data
+
+# Build output folders (nếu có)
+/server/dist
+/server/build
+
+# -------------------------------------------------------------------
+# 3. Frontend Specific Ignores
+# -------------------------------------------------------------------
+
+# Thư mục build output của Frontend (thường là dist/build/out)
+/frontend/dist
+/frontend/build
+
+# Next.js/Gatsby/Vue specific files
+.next
+.nuxt
+out
+.cache

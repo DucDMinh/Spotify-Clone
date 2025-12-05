@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  db:
+    image: mongo
+    container_name: Spotify
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db # Để dữ liệu không bị mất khi tắt Docker
