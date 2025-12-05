@@ -4,6 +4,7 @@ import AdminLayout from './layouts/AdminLayout';  // Layout của Admin mới
 import HomePage from './pages/client/HomePage';
 import AdminHome from './pages/admin/AdminHome';
 import useThemeStore from './stores/useThemeStore';
+import UsersPage from './pages/admin/UsersPage';
 import { useEffect } from 'react';
 
 function App() {
@@ -22,9 +23,7 @@ function App() {
       {/* Route cho Admin (Dashboard) */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
-        {/* Sau này có thể thêm các route con khác như: */}
-        {/* <Route path="profile" element={<ProfilePage />} /> */}
-        {/* <Route path="tables" element={<TablesPage />} /> */}
+        <Route path="users" element={<UsersPage />} />
       </Route>
     </Routes>
   )

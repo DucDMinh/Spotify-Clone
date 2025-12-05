@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaMusic, FaMicrophone, FaBars, FaGlobe, FaUser, FaSignInAlt, FaKey } from 'react-icons/fa';
+import { FaHome, FaMusic, FaMicrophone, FaBars, FaUser, FaSignInAlt, FaKey } from 'react-icons/fa';
 
 const Sidebar = () => {
     const menuItems = [
@@ -7,6 +7,7 @@ const Sidebar = () => {
         { path: '/admin/songs', icon: FaMusic, text: 'Quản lý bài hát' },
         { path: '/admin/artists', icon: FaMicrophone, text: 'Quản lý nghệ sĩ' },
         { path: '/admin/album', icon: FaBars, text: 'Quản lý Album' },
+        { path: '/admin/users', icon: FaUser, text: 'Quản lý Người dùng' },
     ];
 
     const accountItems = [

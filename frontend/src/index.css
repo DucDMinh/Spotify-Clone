@@ -29,10 +29,13 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  padding: 0;
+
+  width: 100vw;
+  /* Chiều rộng full màn hình */
   min-height: 100vh;
+  overflow-x: hidden;
+  /* Tránh thanh cuộn ngang */
 }
 
 h1 {

@@ -1,51 +1,38 @@
-import mongoose, { Schema } from "mongoose";
-import bcrypt from 'bcrypt';
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    avatar: {
-        type: String,
-    },
-    likeSongs: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Song'
-    }],
-    playlists: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Playlist'
-    }],
-    isAdmin: {
-        type: Boolean,
-        default: false
-    }
-}, { timestamps: true })
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    avatar: { type: String, default: "" },
 
-userSchema.pre('save', async function () { // 1. Xóa chữ 'next' trong ngoặc này đi
-    // Nếu password không đổi thì return luôn (tương đương return next())
-    if (!this.isModified('password')) {
-        return;
-    }
+    // Quản lý gói cước
+    isPremium: { type: Boolean, default: false },
+    premiumExpiryDate: { type: Date },
 
+    // Tương tác xã hội
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    followingArtists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }],
+
+    // Thư viện cá nhân
+    likedSongs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
+    playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' }],
+
+    // Quyền admin
+    isAdmin: { type: Boolean, default: false }
+}, { timestamps: true });
+
+// Middleware hash password
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
     try {
-        // 2. Hash password bình thường
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
-        // 3. KHÔNG CẦN gọi next() ở cuối nữa, hàm kết thúc là tự xong.
+        next();
     } catch (error) {
-        throw new Error(error); // Nếu lỗi, chỉ cần throw để Mongoose tự bắt
+        next(error);
     }
 });
 

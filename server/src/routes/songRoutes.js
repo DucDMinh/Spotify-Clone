@@ -8,13 +8,11 @@ const router = express.Router();
 router.get('/', GetAllSong);
 
 router.post('/',
-    protect,
-    admin,
     upload.fields([{ name: 'audioFile', maxCount: 1 },
     { name: 'coverImage', maxCount: 1 }]),
     CreateNewSong);
 
-router.delete('/:id', protect, admin, DeleteSong);
+router.delete('/:id', DeleteSong);
 
 router.put('/:id', UpdateSong);
 
