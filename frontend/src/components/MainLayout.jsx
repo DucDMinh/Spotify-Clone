@@ -9,8 +9,6 @@ const MainLayout = () => {
             <div className="main-content">
                 <Outlet />
             </div>
-
-            {/* Component Player Bar Global */}
             <PlayerBar />
         </div>
     )

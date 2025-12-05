@@ -1,13 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaTable, FaCreditCard, FaCube, FaGlobe, FaUser, FaSignInAlt, FaKey } from 'react-icons/fa';
+import { FaHome, FaMusic, FaMicrophone, FaBars, FaGlobe, FaUser, FaSignInAlt, FaKey } from 'react-icons/fa';
 
 const Sidebar = () => {
     const menuItems = [
         { path: '/admin', icon: FaHome, text: 'Dashboard' },
-        { path: '/admin/tables', icon: FaTable, text: 'Tables' },
-        { path: '/admin/billing', icon: FaCreditCard, text: 'Billing' },
-        { path: '/admin/vr', icon: FaCube, text: 'Virtual Reality' },
-        { path: '/admin/rtl', icon: FaGlobe, text: 'RTL' },
+        { path: '/admin/songs', icon: FaMusic, text: 'Quản lý bài hát' },
+        { path: '/admin/artists', icon: FaMicrophone, text: 'Quản lý nghệ sĩ' },
+        { path: '/admin/album', icon: FaBars, text: 'Quản lý Album' },
     ];
 
     const accountItems = [
@@ -23,9 +22,9 @@ const Sidebar = () => {
                 {/* Logo */}
                 <div className="flex items-center px-4 py-6 mb-2">
                     <div className="w-8 h-8 mr-2 bg-gray-800 dark:bg-white rounded flex items-center justify-center shadow-sm">
-                        <span className="text-white dark:text-gray-900 font-bold text-xs">S</span>
+                        <span className="text-white dark:text-gray-900 font-bold text-xs"></span>
                     </div>
-                    <span className="font-bold text-gray-800 dark:text-white">Soft UI Dashboard</span>
+                    <span className="font-bold text-gray-800 dark:text-white">Admin</span>
                 </div>
 
                 <hr className="border-gray-200 dark:border-gray-700 mb-4 mx-4" />
@@ -36,11 +35,6 @@ const Sidebar = () => {
                         <SidebarItem key={index} {...item} />
                     ))}
 
-                    <h6 className="uppercase text-xs font-bold text-gray-400 dark:text-gray-500 px-6 mt-6 mb-2">Account Pages</h6>
-
-                    {accountItems.map((item, index) => (
-                        <SidebarItem key={index} {...item} />
-                    ))}
                 </nav>
             </div>
         </aside>
