@@ -2,6 +2,7 @@ version: '3.8'
 services:
   db:
     image: mongo
+    restart: 'always'
     container_name: Spotify
     ports:
       - "27017:27017"

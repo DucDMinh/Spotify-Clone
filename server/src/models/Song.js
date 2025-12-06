@@ -16,7 +16,7 @@ const songSchema = new mongoose.Schema({
 
     coverImage: { type: String, required: true },
 
-    duration: { type: Number, required: true }, // Tính bằng giây (VD: 205)
+    duration: { type: Number, required: true, default: 0 }, // Tính bằng giây (VD: 205)
     lyrics: { type: String }, // Lời bài hát (Optional)
 
     plays: { type: Number, default: 0 } // Số lượt nghe
