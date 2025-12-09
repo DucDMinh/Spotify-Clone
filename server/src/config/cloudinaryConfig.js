@@ -11,7 +11,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// --- THAY ĐỔI QUAN TRỌNG NHẤT ---
 // Dùng memoryStorage để lấy được Buffer (dữ liệu thô) của file
 // giúp tính toán duration và upload thủ công trong Controller
 const storage = multer.memoryStorage();

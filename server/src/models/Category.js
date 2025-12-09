@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true }, // VD: "Pop", "Indie", "Workout"
-    value: { type: String, required: true, unique: true }, // VD: "pop", "workout" (slug)
+    name: { type: String, required: true, unique: true },
+    value: { type: String, required: true, unique: true },
 
-    image: { type: String, required: true }, // URL ảnh đại diện cho Category
-    color: { type: String, required: true }, // Màu nền (Hex) cho thẻ Card (VD: #E91429)
+    image: { type: String, required: true },
+    color: { type: String, required: true },
 
     description: { type: String }
 }, { timestamps: true });

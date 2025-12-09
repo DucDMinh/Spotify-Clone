@@ -1,4 +1,4 @@
-// src/services/userService.js
+
 import axios from 'axios';
 
 const API_URL = '/api/users';
@@ -11,7 +11,6 @@ export const userService = {
 
     create: async (userData) => {
         // Axios tự động phát hiện FormData và set header 'Content-Type': 'multipart/form-data'
-        // nên ta không cần cấu hình header thủ công quá phức tạp.
         return await axios.post(API_URL, userData);
     },
 

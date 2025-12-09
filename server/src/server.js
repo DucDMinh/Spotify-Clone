@@ -16,7 +16,7 @@ app.use(express.json());
 app.use('/api', router);
 
 app.use((err, req, res, next) => {
-    console.error("❌ LỖI SERVER:", err); // In lỗi ra Terminal để bạn đọc
+    console.error("❌ LỖI SERVER:", err); // In lỗi ra Terminal
     res.status(500).json({
         success: false,
         message: "Đã xảy ra lỗi ở Server",
@@ -40,5 +40,5 @@ const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-// THÊM DÒNG NÀY: Tăng timeout server lên 5 phút
+//Tăng timeout server lên 5 phút
 server.setTimeout(300000);

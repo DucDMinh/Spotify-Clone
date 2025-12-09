@@ -4,16 +4,12 @@ import { notification, message } from 'antd';
 
 export const useUsers = () => {
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // Loading cho bảng danh sách
+    const [actionLoading, setActionLoading] = useState(false); // Loading cho Modal (Thêm/Xóa)
     const [error, setError] = useState(null);
 
     // 1. Hàm lấy danh sách user (Bọc useCallback để tránh lỗi render vô tận)
     const fetchUsers = useCallback(async () => {
-        // --- SỬA ĐOẠN NÀY ---
-        // Không set loading(true) ở đây nữa, vì mặc định nó đã true rồi.
-        // Hoặc chỉ set nếu nó đang false
-        // setLoading(true); 
-
         try {
             const data = await userService.getAll();
             // ... logic sắp xếp giữ nguyên
@@ -30,18 +26,18 @@ export const useUsers = () => {
     }, []);
     // 2. Hàm Thêm User
     const addUser = async (values) => {
+        setActionLoading(true);
         try {
             await userService.create(values);
-            notification.success({
-                message: "Create User",
-                description: "User created successfully!"
-            });
-            fetchUsers(); // Load lại dữ liệu ngay lập tức
-            return true; // Trả về true để báo cho UI đóng Modal
+            notification.success({ message: "Tạo người dùng thành công!" });
+            fetchUsers();
+            return true;
         } catch (error) {
             console.error(error);
-            message.error("Thêm thất bại! Vui lòng kiểm tra lại.");
+            message.error("Thêm thất bại!");
             return false;
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -71,5 +67,5 @@ export const useUsers = () => {
         fetchUsers();
     }, [fetchUsers]);
 
-    return { users, loading, error, addUser, removeUser };
+    return { users, loading, btnLoading: actionLoading, error, addUser, removeUser };
 };

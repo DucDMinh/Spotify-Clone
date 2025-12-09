@@ -5,13 +5,12 @@ const playlistSchema = new mongoose.Schema({
     description: { type: String },
     coverImage: { type: String, default: "" }, // Nếu rỗng sẽ lấy ảnh bài đầu tiên
 
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Chủ sở hữu
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
 
-    // Ai đã like/follow playlist này?
+
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
-    // Cài đặt riêng tư
     isPublic: { type: Boolean, default: true },
 
     totalDuration: { type: Number, default: 0 }

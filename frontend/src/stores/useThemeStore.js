@@ -1,4 +1,4 @@
-// src/stores/useThemeStore.js
+
 import { create } from 'zustand'
 
 const useThemeStore = create((set) => ({

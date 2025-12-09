@@ -3,21 +3,21 @@ import mongoose from "mongoose";
 const songSchema = new mongoose.Schema({
     title: { type: String, required: true },
 
-    // Một bài hát có thể có nhiều nghệ sĩ (feat.)
+    // Một bài hát có thể có nhiều nghệ sĩ
     artist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist', required: true }],
 
     album: { type: mongoose.Schema.Types.ObjectId, ref: 'Album' },
 
-    // Liên kết với danh mục (Mood, Pop, v.v.)
+    // Liên kết với danh mục
     category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
 
     audioFile: { type: String, required: true }, // URL Cloudinary
-    audioPublicId: { type: String }, // Public ID để xóa file sau này
+    audioPublicId: { type: String },
 
     coverImage: { type: String, required: true },
 
     duration: { type: Number, required: true, default: 0 }, // Tính bằng giây (VD: 205)
-    lyrics: { type: String }, // Lời bài hát (Optional)
+    lyrics: { type: String },
 
     plays: { type: Number, default: 0 } // Số lượt nghe
 }, { timestamps: true });

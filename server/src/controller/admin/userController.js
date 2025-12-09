@@ -3,22 +3,39 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from "../../models/User.js";
 import { uploadToCloudinary } from "../../services/uploadService.js";
+import sharp from 'sharp';
 
 const CreateNewUser = async (req, res, next) => {
     try {
         const avatarFile = req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
         let avatarUrl = "https://res.cloudinary.com/dnhm50qe9/image/upload/v1765042020/OIP_fdrjau.webp";
 
-        // 2. Chỉ upload nếu có file
+        // 2. Chỉ xử lý nếu có file
         if (avatarFile) {
-            const avatarResult = await uploadToCloudinary(avatarFile.buffer, 'spotify-clone/avatar', 'image');
-            avatarUrl = avatarResult.secure_url; // Lấy URL trực tiếp từ kết quả
+            try {
+                const compressedBuffer = await sharp(avatarFile.buffer)
+                    .resize(500, 500, { // Resize về kích thước 500x500
+                        fit: 'cover',   // Cắt ảnh cho vừa khung, không bị méo
+                        position: 'center' // Lấy trung tâm ảnh
+                    })
+                    .toFormat('jpeg')   // Chuyển về định dạng JPEG cho nhẹ
+                    .jpeg({ quality: 80 }) // Nén chất lượng xuống 80%
+                    .toBuffer();        // Chuyển lại thành Buffer để gửi đi upload
+                // Gửi buffer đã nén lên Cloudinary
+                const avatarResult = await uploadToCloudinary(compressedBuffer, 'spotify-clone/avatar', 'image');
+                avatarUrl = avatarResult.secure_url;
+
+            } catch (uploadError) {
+                console.error("Lỗi upload ảnh:", uploadError);
+                // Nếu lỗi upload ảnh, vẫn cho tạo user nhưng dùng ảnh mặc định
+            }
         }
 
         const userData = {
             ...req.body,
-            avatar: avatarUrl, // Lưu URL (hoặc chuỗi rỗng nếu không có ảnh)
+            avatar: avatarUrl,
         };
+
         const user = await createUser(userData);
         if (!user) {
             return res.status(400).json({ message: 'User creation failed' });

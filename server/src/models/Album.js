@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const albumSchema = new mongoose.Schema({
     title: { type: String, required: true },
 
-    // Nghệ sĩ chính của Album
+
     artist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist', required: true }],
 
     songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
@@ -11,12 +11,12 @@ const albumSchema = new mongoose.Schema({
     coverImage: { type: String, required: true },
     releaseDate: { type: Date, default: Date.now },
 
-    // Metadata album
+
     totalTracks: { type: Number, default: 0 },
-    totalDuration: { type: Number, default: 0 }, // Tổng thời lượng (giây)
+    totalDuration: { type: Number, default: 0 },
 
     description: { type: String },
-    backgroundColor: { type: String } // Màu chủ đạo (hex) khi vào trang album
+    backgroundColor: { type: String }
 }, { timestamps: true });
 
 const Album = mongoose.model('Album', albumSchema);

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
-import MainLayout from './components/MainLayout'; // Layout của Client
-import AdminLayout from './layouts/AdminLayout';  // Layout của Admin mới
+import MainLayout from './components/MainLayout';
+import AdminLayout from './layouts/AdminLayout';
 import HomePage from './pages/client/HomePage';
 import Dashboard from './pages/admin/Dashboard';
 import useThemeStore from './stores/useThemeStore';
@@ -11,11 +11,10 @@ function App() {
   const initTheme = useThemeStore((state) => state.initTheme);
 
   useEffect(() => {
-    initTheme(); // Gọi hàm này 1 lần khi App mount
+    initTheme();
   }, []);
   return (
     <Routes>
-      {/* Route cho User (Nghe nhạc) */}
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
       </Route>

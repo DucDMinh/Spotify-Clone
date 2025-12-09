@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { FaTrash, FaEdit, FaUserCircle, FaEye, FaPlus } from 'react-icons/fa';
 import { Popconfirm } from 'antd';
-// Import Hook và Component đã tách
 import { useUsers } from '../../hooks/useUsers';
 import CreateUserModal from '../../components/admin/CreateUserModal';
 
 const UsersPage = () => {
     // 1. Gọi Hook: Lấy dữ liệu và các hàm xử lý
-    const { users, loading, error, addUser, removeUser } = useUsers();
+    const { users, loading, btnLoading, addUser, removeUser, error } = useUsers();
 
     // 2. State quản lý đóng mở Modal (UI State)
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +23,6 @@ const UsersPage = () => {
     return (
         <div className="flex flex-col gap-6">
 
-            {/* === 1. Nút Thêm mới === */}
             <div className="flex justify-end">
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -34,7 +32,6 @@ const UsersPage = () => {
                 </button>
             </div>
 
-            {/* === 2. Bảng Dữ liệu === */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm transition-colors duration-300">
                 <div className="flex justify-between items-center mb-4">
                     <h6 className="font-bold text-gray-800 dark:text-white text-lg">Danh sách người dùng</h6>
@@ -108,13 +105,11 @@ const UsersPage = () => {
                     </table>
                 </div>
             </div>
-
-            {/* === 3. Modal Form (Được tách riêng) === */}
             <CreateUserModal
                 open={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleCreateSubmit}
-                loading={loading} // Truyền trạng thái loading vào để nút bị disable khi đang lưu
+                loading={btnLoading} // Truyền trạng thái loading vào để nút bị disable khi đang lưu
             />
         </div>
     );

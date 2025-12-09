@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import useMusicStore from '../../stores/useMusicStore.js' // Đường dẫn này của bạn là đúng
+import useMusicStore from '../../stores/useMusicStore.js'
 import '../../App.css'
 
 const HomePage = () => {
@@ -25,7 +25,7 @@ const HomePage = () => {
 
             } catch (err) {
                 console.error(err)
-                // Hiển thị lỗi ra màn hình để biết đường sửa
+                // Hiển thị lỗi ra màn hình
                 setErrorMsg(err.message + (err.response ? " - " + err.response.status : ""))
             }
         }

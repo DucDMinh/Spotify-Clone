@@ -23,13 +23,11 @@ const CreateNewSong = async (req, res) => {
         }
 
         // 1. Upload Audio
-        // Vì đã có duration rồi, upload Cloudinary chỉ cần lấy URL thôi, không quan trọng duration nữa
         const audioPromise = uploadToCloudinary(audioFile.buffer, 'spotify-clone/songs', 'video');
 
         // 2. Upload Image
         const imagePromise = uploadToCloudinary(coverImage.buffer, 'spotify-clone/coverImage', 'image');
 
-        // Chạy song song cả 2 để tiết kiệm thời gian
         const [audioResult, imageResult] = await Promise.all([audioPromise, imagePromise]);
 
         // 3. Chuẩn bị dữ liệu
