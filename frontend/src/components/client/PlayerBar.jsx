@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import useMusicStore from '../stores/useMusicStore'
-import '../App.css' // CSS chung
+import useMusicStore from '../../stores/useMusicStore'
+import "../../App.css"; // CSS chung
 
 const PlayerBar = () => {
     // 1. Lấy dữ liệu từ Store

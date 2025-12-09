@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FaHome, FaSearch, FaBook } from 'react-icons/fa' // Import icon
-import '../App.css' // Dùng chung CSS tạm thời
+import "../../App.css"; // Dùng chung CSS tạm thời
 
 const Sidebar = () => {
     return (
