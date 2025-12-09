@@ -2,19 +2,49 @@ import { useState } from 'react';
 import { FaTrash, FaEdit, FaUserCircle, FaEye, FaPlus } from 'react-icons/fa';
 import { Popconfirm } from 'antd';
 import { useUsers } from '../../hooks/useUsers';
-import CreateUserModal from '../../components/admin/CreateUserModal';
+import UserModal from '../../components/admin/UserModal';
+import UserDetailModal from '../../components/admin/UserDetailModal'
 
 const UsersPage = () => {
     // 1. Gọi Hook: Lấy dữ liệu và các hàm xử lý
-    const { users, loading, btnLoading, addUser, removeUser, error } = useUsers();
+    const { users, loading, btnLoading, addUser, removeUser, editUser, error } = useUsers();
 
-    // 2. State quản lý đóng mở Modal (UI State)
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const handleCreateSubmit = async (values) => {
-        const success = await addUser(values);
-        if (success) {
-            setIsModalOpen(false); // Chỉ đóng modal khi thêm thành công
+    const [selectedUser, setSelectedUser] = useState(null); // State lưu user đang sửa
+
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [detailUser, setDetailUser] = useState(null);
+    const handleViewDetail = (user) => {
+        setDetailUser(user);
+        setIsDetailOpen(true);
+    };
+    // Hàm xử lý chung khi submit Form (cả thêm và sửa)
+    const handleSubmit = async (formData) => {
+        let success;
+        if (selectedUser) {
+            // Nếu đang có selectedUser -> Gọi hàm Sửa
+            success = await editUser(selectedUser._id, formData);
+        } else {
+            // Nếu không -> Gọi hàm Thêm
+            success = await addUser(formData);
         }
+
+        if (success) {
+            setIsModalOpen(false);
+            setSelectedUser(null); // Reset user đang chọn
+        }
+    };
+
+    // Hàm mở Modal Sửa
+    const handleEditClick = (user) => {
+        setSelectedUser(user); // Lưu user vào state
+        setIsModalOpen(true);  // Mở modal
+    };
+
+    // Hàm mở Modal Thêm mới
+    const handleCreateClick = () => {
+        setSelectedUser(null); // Đảm bảo không có user cũ
+        setIsModalOpen(true);
     };
 
     if (loading) return <div className="p-6 text-gray-500">Đang tải dữ liệu...</div>;
@@ -24,7 +54,7 @@ const UsersPage = () => {
         <div className="flex flex-col gap-6">
 
             <div className="flex justify-end">
-                <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg shadow-purple-500/30 transition-all transform hover:scale-105 active:scale-95">
+                <button onClick={handleCreateClick} className="flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg shadow-purple-500/30 transition-all transform hover:scale-105 active:scale-95">
                     <FaPlus /> <span className="hidden sm:inline">Thêm mới</span>
                 </button>
             </div>
@@ -76,10 +106,15 @@ const UsersPage = () => {
                                         {new Date(user.createdAt).toLocaleDateString('vi-VN')}
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button className="text-white hover:text-blue-900 bg-green-400 dark:bg-black dark:text-green-600 dark:hover:text-blue-300 mx-2 p-2 rounded">
+                                        <button
+                                            onClick={() => handleViewDetail(user)} // <--- GỌI HÀM NÀY
+                                            className="text-white hover:text-blue-900 bg-green-400 dark:bg-black dark:text-green-600 dark:hover:text-blue-300 mx-2 p-2 rounded transition-transform hover:scale-110 shadow-sm"
+                                            title="Xem chi tiết"
+                                        >
                                             <FaEye />
                                         </button>
-                                        <button className="text-blue-600 hover:text-blue-900 bg-yellow-400 dark:bg-black dark:text-blue-400 dark:hover:text-blue-300 mx-2 p-2 rounded">
+                                        <button
+                                            onClick={() => handleEditClick(user)} title="Sửa" className="text-blue-600 hover:text-blue-900 bg-yellow-400 dark:bg-black dark:text-blue-400 dark:hover:text-blue-300 mx-2 p-2 rounded">
                                             <FaEdit />
                                         </button>
 
@@ -102,11 +137,20 @@ const UsersPage = () => {
                     </table>
                 </div>
             </div>
-            <CreateUserModal
+            <UserModal
                 open={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSubmit={handleCreateSubmit}
-                loading={btnLoading} // Truyền trạng thái loading vào để nút bị disable khi đang lưu
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setSelectedUser(null);
+                }}
+                onSubmit={handleSubmit}
+                loading={btnLoading}
+                userData={selectedUser} // Truyền data user cần sửa vào
+            />
+            <UserDetailModal
+                open={isDetailOpen}
+                onClose={() => setIsDetailOpen(false)}
+                user={detailUser}
             />
         </div>
     );

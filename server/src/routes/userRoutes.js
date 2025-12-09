@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/', upload.fields([{ name: 'avatar', maxCount: 1 }]), CreateNewUser);
 router.get('/', GetAllUsers);
 router.delete('/:id', DeleteUser);
-router.put('/:id', UpdateUser);
+router.put('/:id', upload.fields([{ name: 'avatar', maxCount: 1 }]), UpdateUser);
 router.post('/login', Login);
 
 export default router;

@@ -12,7 +12,6 @@ export const useUsers = () => {
     const fetchUsers = useCallback(async () => {
         try {
             const data = await userService.getAll();
-            // ... logic sắp xếp giữ nguyên
             const sortedData = data.sort((a, b) => {
                 return new Date(b.createdAt) - new Date(a.createdAt);
             });
@@ -61,12 +60,26 @@ export const useUsers = () => {
             });
         }
     };
-
+    const editUser = async (id, values) => {
+        setActionLoading(true);
+        try {
+            await userService.update(id, values);
+            notification.success({ message: "Cập nhật thành công!" });
+            fetchUsers(); // Load lại danh sách
+            return true;
+        } catch (error) {
+            console.error(error);
+            message.error("Cập nhật thất bại!");
+            return false;
+        } finally {
+            setActionLoading(false);
+        }
+    };
 
     // Tự động chạy khi component load lần đầu
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
 
-    return { users, loading, btnLoading: actionLoading, error, addUser, removeUser };
+    return { users, loading, btnLoading: actionLoading, error, addUser, removeUser, editUser };
 };

@@ -79,15 +79,44 @@ const DeleteUser = async (req, res) => {
 const UpdateUser = async (req, res) => {
     try {
         const userId = req.params.id;
-        const updateData = req.body;
-        const updatedUser = await updateUser(userId, updateData);
-        if (!updatedUser) {
+        const { username, email, password, isAdmin } = req.body;
+
+        //Tìm user hiện tại trong DB để lấy thông tin cũ
+        const currentUser = await User.findById(userId);
+        if (!currentUser) {
             return res.status(404).json({ message: 'User not found' });
         }
+
+        //Xử lý Ảnh Avatar
+        let avatarUrl = currentUser.avatar; // Mặc định giữ ảnh cũ
+        const avatarFile = req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
+
+        if (avatarFile) {
+            const uploadResult = await uploadToCloudinary(avatarFile.buffer, 'spotify-clone/avatar', 'image');
+            avatarUrl = uploadResult.secure_url;
+        }
+
+        //Chuẩn bị dữ liệu update
+        const updateData = {
+            username,
+            email,
+            isAdmin: isAdmin === 'true' || isAdmin === true, // Xử lý kiểu dữ liệu từ FormData
+            avatar: avatarUrl
+        };
+
+        //Xử lý Mật khẩu mới
+        if (password && password.trim() !== "") {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            updateData.password = hashedPassword;
+        }
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+
         res.status(200).json({
             message: 'User updated successfully',
             data: updatedUser
         });
+
     } catch (error) {
         res.status(500).json({ message: 'Error updating user: ' + error.message });
     }
