@@ -24,11 +24,8 @@ const UsersPage = () => {
         <div className="flex flex-col gap-6">
 
             <div className="flex justify-end">
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium shadow-md transition-all duration-300 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
-                >
-                    <FaPlus /> Thêm mới
+                <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg shadow-purple-500/30 transition-all transform hover:scale-105 active:scale-95">
+                    <FaPlus /> <span className="hidden sm:inline">Thêm mới</span>
                 </button>
             </div>
 

@@ -5,6 +5,7 @@ import HomePage from './pages/client/HomePage';
 import Dashboard from './pages/admin/Dashboard';
 import useThemeStore from './stores/useThemeStore';
 import UsersPage from './pages/admin/UsersPage';
+import SongsPage from './pages/admin/SongsPage'
 import { useEffect } from 'react';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="users" element={<UsersPage />} />
+        <Route path="songs" element={<SongsPage />} />
       </Route>
     </Routes>
   )

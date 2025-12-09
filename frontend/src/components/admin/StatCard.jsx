@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const StatCard = ({ title, value, percentage, icon: Icon, gradient }) => (
     // dark:bg-gray-800
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm transition-colors duration-300">

@@ -10,11 +10,6 @@ const Sidebar = () => {
         { path: '/admin/users', icon: FaUser, text: 'Quản lý Người dùng' },
     ];
 
-    const accountItems = [
-        { path: '/admin/profile', icon: FaUser, text: 'Profile' },
-        { path: '/signin', icon: FaSignInAlt, text: 'Sign In' },
-        { path: '/signup', icon: FaKey, text: 'Sign Up' },
-    ];
 
     return (
         // dark:bg-gray-900 dark:border-gray-700
@@ -43,6 +38,7 @@ const Sidebar = () => {
 };
 
 // Component con SidebarItem
+// eslint-disable-next-line no-unused-vars
 const SidebarItem = ({ path, icon: Icon, text }) => (
     <NavLink
         to={path}

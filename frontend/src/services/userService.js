@@ -16,5 +16,9 @@ export const userService = {
 
     delete: async (id) => {
         return await axios.delete(`${API_URL}/${id}`);
+    },
+
+    update: async (id) => {
+        return await axios.put(`${API_URL}/${id}`);
     }
 };

@@ -1,6 +1,7 @@
 import { FaSearch, FaUser, FaCog, FaBell } from 'react-icons/fa';
 import ThemeToggle from '../ThemeToggle';
 
+// eslint-disable-next-line no-unused-vars
 const Header = ({ title = "Dashboard" }) => {
     return (
         <header className="flex flex-col md:flex-row justify-between items-center mb-8 bg-transparent">
