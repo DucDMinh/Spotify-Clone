@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import MainLayout from './components/MainLayout'; // Layout của Client
 import AdminLayout from './layouts/AdminLayout';  // Layout của Admin mới
 import HomePage from './pages/client/HomePage';
-import AdminHome from './pages/admin/AdminHome';
+import Dashboard from './pages/admin/Dashboard';
 import useThemeStore from './stores/useThemeStore';
 import UsersPage from './pages/admin/UsersPage';
 import { useEffect } from 'react';
@@ -22,7 +22,7 @@ function App() {
 
       {/* Route cho Admin (Dashboard) */}
       <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminHome />} />
+        <Route index element={<Dashboard />} />
         <Route path="users" element={<UsersPage />} />
       </Route>
     </Routes>

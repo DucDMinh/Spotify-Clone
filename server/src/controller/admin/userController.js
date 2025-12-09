@@ -2,10 +2,23 @@ import { createUser, getAllUsers, deleteUser, updateUser } from "../../services/
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from "../../models/User.js";
+import { uploadToCloudinary } from "../../services/uploadService.js";
 
 const CreateNewUser = async (req, res, next) => {
     try {
-        const userData = req.body;
+        const avatarFile = req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
+        let avatarUrl = "https://res.cloudinary.com/dnhm50qe9/image/upload/v1765042020/OIP_fdrjau.webp";
+
+        // 2. Chỉ upload nếu có file
+        if (avatarFile) {
+            const avatarResult = await uploadToCloudinary(avatarFile.buffer, 'spotify-clone/avatar', 'image');
+            avatarUrl = avatarResult.secure_url; // Lấy URL trực tiếp từ kết quả
+        }
+
+        const userData = {
+            ...req.body,
+            avatar: avatarUrl, // Lưu URL (hoặc chuỗi rỗng nếu không có ảnh)
+        };
         const user = await createUser(userData);
         if (!user) {
             return res.status(400).json({ message: 'User creation failed' });

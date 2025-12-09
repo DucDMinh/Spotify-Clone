@@ -1,65 +1,170 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { FaTrash, FaEdit, FaUserCircle } from 'react-icons/fa';
+import { FaTrash, FaEdit, FaUserCircle, FaEye, FaPlus } from 'react-icons/fa';
+import { Popconfirm, Modal, Form, Input, Select, message, Button, notification } from 'antd';
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm(); // Instance để quản lý form
 
-    // 1. Hàm gọi API lấy danh sách User
-    const fetchUsers = async () => {
+    // 3. Hàm xử lý khi nhấn nút "Lưu" trong Modal
+    const handleCreateUser = async (values) => {
         try {
-            // // Lưu ý: Nếu backend yêu cầu token, bạn cần thêm header Authorization
-            // const token = localStorage.getItem('token');
-            // const config = {
-            //     headers: { Authorization: `Bearer ${token}` }
-            // };
+            // values chứa: { username, email, password, role, ... }
+            const res = await axios.post('/api/users', values);
 
-            const response = await axios.get('/api/users');
-
-            // Backend trả về: { data: [...] }
-            if (response.data && response.data.data) {
-                setUsers(response.data.data);
+            if (res.data) {
+                notification.success({
+                    message: "Create User",
+                    description: "User create successfully!"
+                });
+                setIsModalOpen(false); // Đóng modal
+                form.resetFields(); // Reset form trắng
+                fetchUsers(); // Load lại danh sách user mới
             }
-            setLoading(false);
-        } catch (err) {
-            console.error("Lỗi tải users:", err);
-            setError("Không thể tải danh sách người dùng.");
-            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            message.error("Thêm thất bại!");
         }
     };
 
     // 2. Hàm xóa User
     const handleDelete = async (userId) => {
-        if (!window.confirm("Bạn có chắc chắn muốn xóa người dùng này?")) return;
-
+        console.log("Check id:", userId)
         try {
-            const token = localStorage.getItem('token');
+
             await axios.delete(`/api/users/${userId}`);
 
             // Cập nhật lại giao diện sau khi xóa thành công
             setUsers(users.filter(user => user._id !== userId));
-            alert("Đã xóa người dùng thành công!");
+            notification.success({
+                message: "Delete User",
+                description: "User deleted successfully!"
+            });
         } catch (err) {
             console.error(err);
-            alert("Lỗi khi xóa người dùng.");
+            notification.error({
+                message: "Delete User False",
+                description: "User deleted false!"
+            });
         }
     };
 
+    const cancel = e => {
+        console.log(e);
+        message.error('Click on No');
+    };
+
+
+    const fetchUsers = useCallback(async () => {
+        setLoading(true); // Nên set loading true mỗi khi gọi lại
+        try {
+            const response = await axios.get('/api/users');
+
+            if (response.data && response.data.data) {
+                setUsers(response.data.data);
+                const sortedData = response.data.data.sort((a, b) => {
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+                setUsers(sortedData);
+            }
+            setLoading(false);
+        } catch (err) {
+            console.error("Lỗi tải users:", err);
+            setError("Không thể tải danh sách người dùng.");
+        } finally {
+            setLoading(false);
+        }
+    }, []); // Mảng rỗng nghĩa là hàm này không phụ thuộc biến nào bên ngoài, chỉ tạo 1 lần
+
+    // 2. useEffect chỉ cần gọi hàm này
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [fetchUsers]); // Thêm fetchUsers vào dependency
 
     if (loading) return <div className="p-6 text-gray-500">Đang tải dữ liệu...</div>;
     if (error) return <div className="p-6 text-red-500">{error}</div>;
 
     return (
+
         <div className="flex flex-col gap-6">
+            {/* === 1. Nút Thêm mới (Đưa ra ngoài Card) === */}
+            <div className="flex justify-end">
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-md"
+                >
+                    <FaPlus /> Thêm mới
+                </button>
+                <Modal
+                    title="Thêm Người Dùng Mới"
+                    open={isModalOpen}
+                    onCancel={() => setIsModalOpen(false)}
+                    footer={null} // Ẩn footer mặc định để dùng nút trong Form
+                >
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        onFinish={handleCreateUser}
+                        className="mt-4"
+                    >
+                        <Form.Item
+                            label="Tên đăng nhập"
+                            name="username"
+                            rules={[{ required: true, message: 'Vui lòng nhập tên!' }]}
+                        >
+                            <Input placeholder="Nhập tên người dùng" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Email"
+                            name="email"
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập email!' },
+                                { type: 'email', message: 'Email không hợp lệ!' }
+                            ]}
+                        >
+                            <Input placeholder="example@gmail.com" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Mật khẩu"
+                            name="password"
+                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                        >
+                            <Input.Password placeholder="Nhập mật khẩu" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Vai trò"
+                            name="isAdmin"
+                            initialValue={false}
+                        >
+                            <Select>
+                                <Select.Option value={false}>Member</Select.Option>
+                                <Select.Option value={true}>Admin</Select.Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item className="mb-0 flex justify-end">
+                            <div className="flex justify-end gap-2">
+                                <Button onClick={() => setIsModalOpen(false)}>Hủy</Button>
+                                <Button type="primary" htmlType="submit" className="bg-blue-600">
+                                    Tạo mới
+                                </Button>
+                            </div>
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            </div>
             {/* Header của bảng */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm transition-colors duration-300">
                 <div className="flex justify-between items-center mb-4">
                     <h6 className="font-bold text-gray-800 dark:text-white text-lg">Danh sách người dùng</h6>
+
                     <span className="text-sm text-gray-500 dark:text-gray-400">
                         Tổng cộng: <b className="text-gray-800 dark:text-white">{users.length}</b> thành viên
                     </span>
@@ -129,18 +234,36 @@ const UsersPage = () => {
                                     {/* Cột 4: Nút Xóa/Sửa */}
                                     <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <button
-                                            className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mx-2"
+                                            onClick={() => {
+                                                alert(`Xem chi tiết user: ${user.username}`);
+                                                // Hoặc điều hướng: navigate(`/admin/users/${user._id}`)
+                                            }}
+                                            className="text-white hover:text-blue-900 bg-green-400 dark:bg-black dark:text-green-600 dark:hover:text-blue-300 mx-2"
+                                            title="Xem chi tiết"
+                                        >
+                                            <FaEye />
+                                        </button>
+                                        <button
+                                            className="text-blue-600 hover:text-blue-900 bg-yellow-400 dark:bg-black dark:text-blue-400 dark:hover:text-blue-300 mx-2"
                                             title="Sửa (Chưa làm)"
                                         >
                                             <FaEdit />
                                         </button>
-                                        <button
-                                            onClick={() => handleDelete(user._id)}
-                                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 mx-2"
-                                            title="Xóa người dùng"
+                                        <Popconfirm
+                                            title="Delete the task"
+                                            description="Are you sure to delete this user?"
+                                            // TRUYỀN THẲNG HÀM VÀO ĐÂY, KHÔNG CẦN GỌI HÀM confirm RIÊNG LẺ
+                                            onConfirm={() => handleDelete(user._id)}
+
+                                            onCancel={cancel}
+                                            okText="Yes"
+                                            cancelText="No"
                                         >
-                                            <FaTrash />
-                                        </button>
+                                            {/* Bỏ onClick và setDataDelete ở đây đi, không cần thiết nữa */}
+                                            <button className="text-red-600 hover:text-red-900 mx-2">
+                                                <FaTrash style={{ cursor: "pointer" }} />
+                                            </button>
+                                        </Popconfirm>
                                     </td>
                                 </tr>
                             ))}

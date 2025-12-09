@@ -1,24 +1,9 @@
 import { addNewSong, getAllSong, deleteSong, updateSong } from "../../services/songService.js";
-import { v2 as cloudinary } from "cloudinary";
+import { uploadToCloudinary } from "../../services/uploadService.js"
 import { parseBuffer } from 'music-metadata';
-
-const uploadToCloudinary = (fileBuffer, folder, resourceType = "auto") => {
-    return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-            { folder: folder, resource_type: resourceType },
-            (error, result) => {
-                if (error) return reject(error);
-                resolve(result);
-            }
-        );
-        uploadStream.end(fileBuffer);
-    });
-};
 
 const CreateNewSong = async (req, res) => {
     try {
-        console.log("--> Nhận request tạo bài hát...");
-
         const audioFile = req.files['audioFile'] ? req.files['audioFile'][0] : null;
         const coverImage = req.files['coverImage'] ? req.files['coverImage'][0] : null;
 
@@ -26,25 +11,23 @@ const CreateNewSong = async (req, res) => {
             return res.status(400).json({ message: "Vui lòng upload đủ file nhạc và ảnh bìa" });
         }
 
-        // --- BƯỚC MỚI: TÍNH DURATION NGAY TẠI SERVER ---
+        // TÍNH DURATION NGAY TẠI SERVER
         let duration = 0;
         try {
             // Đọc thông tin từ Buffer của file nhạc
             const metadata = await parseBuffer(audioFile.buffer, audioFile.mimetype);
             duration = metadata.format.duration; // Lấy thời lượng (giây)
-            console.log("--> Đã tính duration tại server:", duration);
         } catch (err) {
-            console.error("❌ Lỗi tính duration local:", err.message);
-            // Nếu lỗi thì để = 0, hoặc chờ lấy từ Cloudinary ở bước sau (fallback)
+            console.error("Lỗi tính duration local:", err.message);
+            // Nếu lỗi thì để = 0, hoặc chờ lấy từ Cloudinary 
         }
-        // ------------------------------------------------
 
         // 1. Upload Audio
-        // Lưu ý: Vì đã có duration rồi, upload Cloudinary chỉ cần lấy URL thôi, không quan trọng duration nữa
+        // Vì đã có duration rồi, upload Cloudinary chỉ cần lấy URL thôi, không quan trọng duration nữa
         const audioPromise = uploadToCloudinary(audioFile.buffer, 'spotify-clone/songs', 'video');
 
         // 2. Upload Image
-        const imagePromise = uploadToCloudinary(coverImage.buffer, 'spotify-clone/images', 'image');
+        const imagePromise = uploadToCloudinary(coverImage.buffer, 'spotify-clone/coverImage', 'image');
 
         // Chạy song song cả 2 để tiết kiệm thời gian
         const [audioResult, imageResult] = await Promise.all([audioPromise, imagePromise]);
@@ -67,7 +50,6 @@ const CreateNewSong = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("❌ LỖI TẠI CreateNewSong:", error);
         res.status(500).json({ message: 'Lỗi tạo bài hát: ' + error.message });
     }
 }
