@@ -1,6 +1,6 @@
-import { CreateNewUser, GetAllUsers, DeleteUser, UpdateUser, Login } from "../controller/admin/userController.js";
+import { CreateNewUser, GetAllUsers, DeleteUser, UpdateUser, Login } from "../../controller/admin/userController.js";
 import express from 'express';
-import upload from "../config/cloudinaryConfig.js";
+import upload from "../../config/cloudinaryConfig.js";
 
 const router = express.Router();
 

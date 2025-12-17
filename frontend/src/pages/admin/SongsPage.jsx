@@ -6,8 +6,7 @@ import { Popconfirm, Tooltip } from 'antd';
 // import { useSongs } from '../../hooks/useSongs'; // Giả sử bạn sẽ tạo hook này sau
 // import CreateSongModal from './CreateSongModal'; // Modal tạo mới
 
-// --- DỮ LIỆU GIẢ LẬP (MOCK DATA) ĐỂ DEMO GIAO DIỆN ---
-// Khi tích hợp, bạn hãy thay thế bằng data từ hook useSongs
+
 const MOCK_SONGS = [
     {
         _id: '1',

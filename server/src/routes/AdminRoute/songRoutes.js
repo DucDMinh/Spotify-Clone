@@ -1,7 +1,7 @@
-import { CreateNewSong, GetAllSong, DeleteSong, UpdateSong } from "../controller/admin/songController.js";
+import { CreateNewSong, GetAllSong, DeleteSong, UpdateSong } from "../../controller/admin/songController.js";
 import express from 'express';
-import { protect, admin } from "../middlewares/authMiddleware.js";
-import upload from "../config/cloudinaryConfig.js";
+import { protect, admin } from "../../middlewares/authMiddleware.js";
+import upload from "../../config/cloudinaryConfig.js";
 
 const router = express.Router();
 

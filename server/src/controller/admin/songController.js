@@ -94,5 +94,16 @@ const UpdateSong = async (req, res) => {
         res.status(500).json({ message: 'Error updating song: ' + error.message });
     }
 }
+const GetSongsForSelect = async (req, res) => {
+    try {
+        // Chỉ lấy trường _id và title, bỏ qua các trường nặng như audioFile, coverImage
+        const songs = await Song.find().select('_id title');
+        res.status(200).json({
+            data: songs
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi lấy danh sách bài hát: ' + error.message });
+    }
+}
 
-export { CreateNewSong, GetAllSong, DeleteSong, UpdateSong }
+export { CreateNewSong, GetAllSong, DeleteSong, UpdateSong, GetSongsForSelect }
